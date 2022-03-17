@@ -55,6 +55,8 @@ const AddRequest = ({ navigation,RootStore }) => {
 
 
   const [Eindicator,setEindicator] = React.useState(false)
+  const [Pindicator,setPindicator] = React.useState(false)
+
   const [generatedCode,setGeneratedCode]= React.useState('')
   const [codeTime,setCodeTime] = React.useState(0)
 
@@ -82,9 +84,8 @@ const AddRequest = ({ navigation,RootStore }) => {
 
   //const regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   const regEmail =/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/
-  
 
-
+  const regPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
 
   const changeEmail=(text)=>{
     onChangeEmail(text)
@@ -96,8 +97,15 @@ const AddRequest = ({ navigation,RootStore }) => {
     },1000)
   }
 
-  
-
+    const changePassword=(text)=>{
+      onChangePassword(text)
+      setTimeout(()=>{
+        if(text=='')
+          setPindicator(false)
+       else
+          setPindicator(true)
+      },1000)
+    }
 
 
   const setLocations = async(lat,long)=>{
@@ -394,13 +402,15 @@ const AddRequest = ({ navigation,RootStore }) => {
     <View style={{flexDirection:'row'}}>
       <TextInput
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
-        onChangeText={text => onChangePassword(text)}
-        secureTextEntry={passwordVisible}
+        onChangeText={text => changePassword(text)}
+        secureTextEntry={true}
         placeholder={'Set your password'}
         value={password}
       />
       <TextInput.Icon style={{marginTop: 44, marginLeft: Dimensions.get('window').width*1.75}} name={passwordVisible ? "eye" : "eye-off"} onPress={() => setPasswordVisible(!passwordVisible)}/>
     </View>
+    {Pindicator && <View>{regPassword.test(password)?<Text style={{color:'green'}}>Valid password</Text>:<Text style={{color:'red'}}>Invalid password: Must have 8 characters, 1 lowercase, 1 uppercase, 1 number and 1 special character</Text>}</View>
+    }
 
     <Text style={styles.step}>Please type your password again</Text>
     <View style={{flexDirection:'row'}}>
