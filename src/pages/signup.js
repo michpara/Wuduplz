@@ -403,7 +403,7 @@ const AddRequest = ({ navigation,RootStore }) => {
       <TextInput
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
         onChangeText={text => changePassword(text)}
-        secureTextEntry={true}
+        secureTextEntry={passwordVisible}
         placeholder={'Set your password'}
         value={password}
       />
@@ -455,11 +455,11 @@ const AddRequest = ({ navigation,RootStore }) => {
                 password!=password1?
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
                   <AntDesign  name={'closecircleo'} size={15} color={'red'} />
-                  <Text style={{color:'red',fontSize:10,width:'75%',marginLeft:10}}>incorrect password</Text>
+                  <Text style={{color:'red',fontSize:10,width:'75%',marginLeft:10}}>Passwords are not the same</Text>
                 </View>:
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
                   <AntDesign  name={'checkcircleo'} size={15} color={'green'} />
-                  <Text style={{color:'green',fontSize:10,width:'75%',marginLeft:10}}>correct password</Text>
+                  <Text style={{color:'green',fontSize:10,width:'75%',marginLeft:10}}>Password are the same</Text>
                 </View>
 
           }</View>}
