@@ -80,12 +80,33 @@ const AddRequest = ({ navigation,RootStore }) => {
 
   const [passwordVisibleSecond, setPasswordVisibleSecond] = React.useState(true);
 
-
-
   //const regEmail = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
   const regEmail =/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/
 
   const regPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
+
+  let validPassword = false;
+  let samePassword = false;
+
+  const testPassword=(password)=>{
+    if(regPassword.test(password)){
+        validPassword = true;
+        return true;
+    } else {
+        validPassword = false;
+        return false;
+    }
+  }
+
+  const testPasswordSame=(password, password1)=>{
+    if(password == password1){
+        samePassword = true;
+        return true;
+    } else {
+        samePassword = false;
+        return false;
+    }
+  }
 
   const changeEmail=(text)=>{
     onChangeEmail(text)
@@ -409,7 +430,7 @@ const AddRequest = ({ navigation,RootStore }) => {
       />
       <TextInput.Icon style={{marginTop: 44, marginLeft: Dimensions.get('window').width*1.75}} name={passwordVisible ? "eye" : "eye-off"} onPress={() => setPasswordVisible(!passwordVisible)}/>
     </View>
-    {Pindicator && <View>{regPassword.test(password)?<Text style={{color:'green'}}>Valid password</Text>:<Text style={{color:'red'}}>Invalid password: Must have 8 characters, 1 lowercase, 1 uppercase, 1 number and 1 special character</Text>}</View>
+    {Pindicator && <View>{testPassword(password)?<Text style={{color:'green'}}>Valid password</Text>:<Text style={{color:'red'}}>Invalid password: Must have 8 characters, 1 lowercase, 1 uppercase, 1 number and 1 special character</Text>}</View>
     }
 
     <Text style={styles.step}>Please type your password again</Text>
@@ -452,7 +473,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         </View>
           {passwordInfoIndicator&&
               <View style={{alignSelf:'center'}}>{
-                password!=password1?
+                !testPasswordSame(password, password1)?
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
                   <AntDesign  name={'closecircleo'} size={15} color={'red'} />
                   <Text style={{color:'red',fontSize:10,width:'75%',marginLeft:10}}>Passwords are not the same</Text>
@@ -581,13 +602,13 @@ const AddRequest = ({ navigation,RootStore }) => {
         value={birthday}
       /> */}
 
-
-    <TouchableOpacity activeOpacity={0.5} onPress={Start}>
+<View style={(!validPassword || !samePassword)?styles.disabled:styles.enabled} >
+    <TouchableOpacity disabled={!validPassword || !samePassword} onPress={Start}>
           <View style={styles.startBottom}>
-            <Text style={styles.startText}>Let's get start!</Text>
+            <Text style={styles.startText}>Let's start!</Text>
           </View>
     </TouchableOpacity>
-
+</View>
     {/* <TouchableOpacity activeOpacity={0.5} onPress={disconnect}>
           <View style={styles.startBottom}>
             <Text style={styles.startText}>disconnect</Text>
@@ -671,6 +692,12 @@ const styles = StyleSheet.create({
     color:'#ffffff',
     alignItems:'center',
     fontSize:14,
+  },
+  disabled:{
+    opacity: 0.5,
+  },
+  enabled:{
+    opacity: 1,
   },
 });
 
