@@ -475,12 +475,10 @@ const AddRequest = ({ navigation,RootStore }) => {
               <View style={{alignSelf:'center'}}>{
                 !testPasswordSame(password, password1)?
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
-                  <AntDesign  name={'closecircleo'} size={15} color={'red'} />
-                  <Text style={{color:'red',fontSize:10,width:'75%',marginLeft:10}}>Passwords are not the same</Text>
+                  <Text style={{color:'red'}}>Passwords are not the same</Text>
                 </View>:
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
-                  <AntDesign  name={'checkcircleo'} size={15} color={'green'} />
-                  <Text style={{color:'green',fontSize:10,width:'75%',marginLeft:10}}>Password are the same</Text>
+                  <Text style={{color:'green'}}>Password are the same</Text>
                 </View>
 
           }</View>}
