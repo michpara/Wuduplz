@@ -87,6 +87,7 @@ const AddRequest = ({ navigation,RootStore }) => {
 
   let validPassword = false;
   let samePassword = false;
+  let validEmail = false;
 
   const testPassword=(password)=>{
     if(regPassword.test(password)){
@@ -94,6 +95,16 @@ const AddRequest = ({ navigation,RootStore }) => {
         return true;
     } else {
         validPassword = false;
+        return false;
+    }
+  }
+
+  const testEmail=(email)=>{
+    if(regEmail.test(email)){
+        validEmail = true;
+        return true;
+    } else {
+        validEmail = false;
         return false;
     }
   }
@@ -331,7 +342,7 @@ const AddRequest = ({ navigation,RootStore }) => {
       <TouchableOpacity style={{paddingVertical:5,borderRadius:9,borderWidth:1,height:40,marginVertical:10,backgroundColor:'blue'}}
       onPress={async()=>{
         if(countDown==0){
-        if(regEmail.test(email)){
+        if(testEmail(email)){
           let result = await request.get(`/sendCode/${email.toLowerCase()}`)
           Toast.success('code has been sent')
           setCountDown(60)
@@ -355,7 +366,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         {countDownIndicator?<Text style={{fontSize:10,width:Dimensions.get('window').width/4,alignSelf:'stretch',textAlign:'center',color:'white'}}>{countDown}</Text>:<Text style={{fontSize:10,width:Dimensions.get('window').width/4,alignSelf:'stretch',textAlign:'center',color:'white'}}>Send Verification Code</Text>}
       </TouchableOpacity>
       </View>
-      {Eindicator && <View>{regEmail.test(email)?<Text style={{color:'green'}}>valid email address format</Text>:<Text style={{color:'red'}}>invalid email address!</Text>}</View>
+      {Eindicator && <View>{testEmail(email)?<Text style={{color:'green'}}>valid email address format</Text>:<Text style={{color:'red'}}>invalid email address!</Text>}</View>
       }
 
 <View style={{flexDirection:'row',alignSelf:'baseline'}}>
@@ -602,7 +613,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         value={birthday}
       /> */}
 
-<View style={(!validPassword || !samePassword)?styles.disabled:styles.enabled} >
+<View style={(!validPassword || !samePassword || !username || !city || !province || !country || !keyword1 || !keyword2 || !keyword3 || !validEmail || (age == 1 && !birthday))?styles.disabled:styles.enabled} >
     <TouchableOpacity disabled={!validPassword || !samePassword} onPress={Start}>
           <View style={styles.startBottom}>
             <Text style={styles.startText}>Let's start!</Text>
