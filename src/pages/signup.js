@@ -56,6 +56,7 @@ const AddRequest = ({ navigation,RootStore }) => {
 
   const [Eindicator,setEindicator] = React.useState(false)
   const [Pindicator,setPindicator] = React.useState(false)
+  const [Bindicator,setBindicator] = React.useState(false)
 
   const [generatedCode,setGeneratedCode]= React.useState('')
   const [codeTime,setCodeTime] = React.useState(0)
@@ -85,8 +86,12 @@ const AddRequest = ({ navigation,RootStore }) => {
 
   const regPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/
 
+  const regBirthday = /^(19|20)[\d]{2,2}$/
+
   let validPassword = false;
   let samePassword = false;
+  let validEmail = false;
+  let validBirthday = false;
 
   const testPassword=(password)=>{
     if(regPassword.test(password)){
@@ -94,6 +99,26 @@ const AddRequest = ({ navigation,RootStore }) => {
         return true;
     } else {
         validPassword = false;
+        return false;
+    }
+  }
+
+    const testBirthday=(birthday)=>{
+      if(regBirthday.test(birthday)){
+          validBirthday = true;
+          return true;
+      } else {
+          validBirthday = false;
+          return false;
+      }
+    }
+
+  const testEmail=(email)=>{
+    if(regEmail.test(email)){
+        validEmail = true;
+        return true;
+    } else {
+        validEmail = false;
         return false;
     }
   }
@@ -115,6 +140,17 @@ const AddRequest = ({ navigation,RootStore }) => {
         setEindicator(false)
      else
         setEindicator(true)
+    },1000)
+  }
+
+
+  const changeBirthday=(text)=>{
+    onChangeBirthDay(text)
+    setTimeout(()=>{
+      if(text=='')
+        setBindicator(false)
+     else
+        setBindicator(true)
     },1000)
   }
 
@@ -332,7 +368,7 @@ const AddRequest = ({ navigation,RootStore }) => {
       <TouchableOpacity style={{paddingVertical:5,borderRadius:9,borderWidth:1,height:40,marginVertical:10,backgroundColor:'blue'}}
       onPress={async()=>{
         if(countDown==0){
-        if(regEmail.test(email)){
+        if(testEmail(email)){
           let result = await request.get(`/sendCode/${email.toLowerCase()}`)
           Toast.success('Verification code has been sent')
           setCountDown(60)
@@ -356,7 +392,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         {countDownIndicator?<Text style={{fontSize:10,width:Dimensions.get('window').width/4,alignSelf:'stretch',textAlign:'center',color:'white'}}>{countDown}</Text>:<Text style={{fontSize:10,width:Dimensions.get('window').width/4,alignSelf:'stretch',textAlign:'center',color:'white'}}>Send Verification Code</Text>}
       </TouchableOpacity>
       </View>
-      {Eindicator && <View>{regEmail.test(email)?<Text style={{color:'green'}}>Valid email address</Text>:<Text style={{color:'red'}}>Invalid email address. Format: example@gmail.com</Text>}</View>
+      {Eindicator && <View>{testEmail(email)?<Text style={{color:'green'}}>Valid email address</Text>:<Text style={{color:'red'}}>Invalid email address. Format: example@gmail.com</Text>}</View>
       }
 
 <View style={{flexDirection:'row',alignSelf:'baseline'}}>
@@ -584,13 +620,15 @@ const AddRequest = ({ navigation,RootStore }) => {
       <View>
         <TextInput
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
-        onChangeText={text => onChangeBirthDay(text)}
+        onChangeText={text => changeBirthday(text)}
         keyboardType={'email-address'}
         placeholder={'Year of birth'}
         value={birthday}
       />
       </View>:<></>}
     </View>
+    {Bindicator && age == 1 && <View>{testBirthday(birthday)?<Text style={{color:'green'}}>Valid year of birth</Text>:<Text style={{color:'red'}}>Invalid year of birth. Ex: 1999</Text>}</View>}
+
    
     {/* <TextInput
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
@@ -600,7 +638,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         value={birthday}
       /> */}
 
-<View style={(!validPassword || !samePassword)?styles.disabled:styles.enabled} >
+<View style={(!validPassword || !samePassword || !username || !city || !province || !country || !keyword1 || !keyword2 || !keyword3 || !validEmail || (age == 1 && !validBirthday))?styles.disabled:styles.enabled} >
     <TouchableOpacity disabled={!validPassword || !samePassword} onPress={Start}>
           <View style={styles.startBottom}>
             <Text style={styles.startText}>Signup</Text>
