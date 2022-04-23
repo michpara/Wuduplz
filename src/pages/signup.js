@@ -167,6 +167,7 @@ const AddRequest = ({ navigation,RootStore }) => {
 
   const setLocations = async(lat,long)=>{
     var result = await axios.get('https://maps.googleapis.com/maps/api/geocode/json?'+'address='+lat+','+long+'&key='+api_key)
+    console.log(result.request)
     var final = JSON.parse(result.request._response).results[0].address_components
     for(var i=0;i<final.length;i++){
     console.log(final[i])
@@ -309,14 +310,14 @@ const AddRequest = ({ navigation,RootStore }) => {
         'Keywords':keywords
       }
       if(verificationCode==''){
-        Toast.info('please input verification code')
+        Toast.info('Please input verification code')
       }else if(status!=2){
         Toast.info(message)
       }
       else if(data['Email']==''||data['Password']=='' || data['UserName']==''){
-          Toast.info('no blank input')
+          Toast.info('Please fill out all fields')
       }else if(password!=password1){
-        Toast.info('please make sure you type the same password')
+        Toast.info('Passwords are not the same')
       }
       else{
         console.log(data)
@@ -325,7 +326,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         if(!result.status){
           Toast.fail(result.message)
         }else{
-        Toast.smile('succes!')
+        Toast.smile('Success!')
         navigation.navigate('Login')
         }
       }
@@ -360,7 +361,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: (2*Dimensions.get('window').width)/3 }}
         onChangeText={text => changeEmail(text)}
         keyboardType={'email-address'}
-        placeholder={'Your email'}
+        placeholder={'Email'}
         value={email}
         autoCapitalize='none'
       />
@@ -369,7 +370,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         if(countDown==0){
         if(testEmail(email)){
           let result = await request.get(`/sendCode/${email.toLowerCase()}`)
-          Toast.success('code has been sent')
+          Toast.success('Verification code has been sent')
           setCountDown(60)
           setCountDownIndicator(true)
           const currentTime = Date.now()
@@ -383,15 +384,15 @@ const AddRequest = ({ navigation,RootStore }) => {
             }
           },1000)
         }else
-          Toast.info('please input valid email addrss')
+          Toast.info('Please input a valid email address')
       }else{
-        Toast.info('wait')
+        Toast.info('Wait...')
       }
       }}>
         {countDownIndicator?<Text style={{fontSize:10,width:Dimensions.get('window').width/4,alignSelf:'stretch',textAlign:'center',color:'white'}}>{countDown}</Text>:<Text style={{fontSize:10,width:Dimensions.get('window').width/4,alignSelf:'stretch',textAlign:'center',color:'white'}}>Send Verification Code</Text>}
       </TouchableOpacity>
       </View>
-      {Eindicator && <View>{testEmail(email)?<Text style={{color:'green'}}>valid email address format</Text>:<Text style={{color:'red'}}>invalid email address!</Text>}</View>
+      {Eindicator && <View>{testEmail(email)?<Text style={{color:'green'}}>Valid email address</Text>:<Text style={{color:'red'}}>Invalid email address. Format: example@gmail.com</Text>}</View>
       }
 
 <View style={{flexDirection:'row',alignSelf:'baseline'}}>
@@ -461,7 +462,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
         onChangeText={text => changePassword(text)}
         secureTextEntry={passwordVisible}
-        placeholder={'Set your password'}
+        placeholder={'Password'}
         value={password}
       />
       <TextInput.Icon style={{marginTop: 44, marginLeft: Dimensions.get('window').width*1.75}} name={passwordVisible ? "eye" : "eye-off"} onPress={() => setPasswordVisible(!passwordVisible)}/>
@@ -469,7 +470,6 @@ const AddRequest = ({ navigation,RootStore }) => {
     {Pindicator && <View>{testPassword(password)?<Text style={{color:'green'}}>Valid password</Text>:<Text style={{color:'red'}}>Invalid password: Must have 8 characters, 1 lowercase, 1 uppercase, 1 number and 1 special character</Text>}</View>
     }
 
-    <Text style={styles.step}>Please type your password again</Text>
     <View style={{flexDirection:'row'}}>
           <TextInput
             style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
@@ -511,28 +511,26 @@ const AddRequest = ({ navigation,RootStore }) => {
               <View style={{alignSelf:'center'}}>{
                 !testPasswordSame(password, password1)?
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
-                  <AntDesign  name={'closecircleo'} size={15} color={'red'} />
-                  <Text style={{color:'red',fontSize:10,width:'75%',marginLeft:10}}>Passwords are not the same</Text>
+                  <Text style={{color:'red'}}>Passwords are not the same</Text>
                 </View>:
                 <View style={{marginRight: 3,flexDirection:'row',alignItems:'center'}}>
-                  <AntDesign  name={'checkcircleo'} size={15} color={'green'} />
-                  <Text style={{color:'green',fontSize:10,width:'75%',marginLeft:10}}>Password are the same</Text>
+                  <Text style={{color:'green'}}>Password are the same</Text>
                 </View>
 
           }</View>}
           
-    <Text style={styles.step}> Nick Name </Text>
+    <Text style={styles.step}> Username </Text>
       <TextInput
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
         onChangeText={text => onChangeUserName(text)}
         keyboardType={'email-address'}
-        placeholder={'User name'}
+        placeholder={'Username'}
         value={username}
       /> 
 
 
 
-    <Text style={styles.text}> use GPS to get your location </Text>
+    <Text style={styles.text}> Use GPS to get your location </Text>
     <View style={{flexDirection:'row', alignItems:'baseline',}}> 
 
     <TouchableOpacity activeOpacity={0.5} onPress={getLocation}>
@@ -542,14 +540,14 @@ const AddRequest = ({ navigation,RootStore }) => {
     </TouchableOpacity>
 
     </View>
-    <Text style={styles.text}> Or you can type your city and country </Text> 
+    <Text style={styles.text}> Or give your address </Text>
     <View style={{flexDirection:'row'}}>
     <TextInput
         style={{ height: 35, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width/3 - 30 }}
         onChangeText={text => onChangeCity(text)}
         keyboardType={'email-address'}
         value={city}
-        placeholder={'Your city'}
+        placeholder={'City'}
  
       />
 
@@ -558,7 +556,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         onChangeText={text => onChangeProvince(text)}
         keyboardType={'email-address'}
         value={province}
-        placeholder={'Your province'}
+        placeholder={'Province'}
  
       />
 
@@ -567,7 +565,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         onChangeText={text => onChangeCountry(text)}
         keyboardType={'email-address'}
         value={country}
-        placeholder={'Your country'}
+        placeholder={'Country'}
 
       />
     </View>
@@ -578,7 +576,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         style={{ height: 35, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width/3 - 30 }}
         onChangeText={text => onChange1(text)}
         keyboardType={'email-address'}
-        placeholder={'keyword1'}
+        placeholder={'Ex: Dogs'}
  
       />
 
@@ -586,7 +584,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         style={{ height: 35, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width/3 - 30 }}
         onChangeText={text => onChange2(text)}
         keyboardType={'email-address'}
-        placeholder={'keyword2'}
+        placeholder={'Ex: Food'}
  
       />
 
@@ -594,13 +592,13 @@ const AddRequest = ({ navigation,RootStore }) => {
         style={{ height: 35, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width/3 - 30 }}
         onChangeText={text => onChange3(text)}
         keyboardType={'email-address'}
-        placeholder={'keyword3'}
+        placeholder={'Ex: School'}
 
       />
     </View>
 
     <View>
-    <Text style={styles.text}> Are you more than 21 years old </Text> 
+    <Text style={styles.text}> Are you older than 21? </Text>
     <View style={{flexDirection:'row',alignItems:'flex-start',width:'95%',alignSelf:'center'}}> 
       <RadioGroup onSelect = {(index, value) => {
         if(index==0)
@@ -624,7 +622,7 @@ const AddRequest = ({ navigation,RootStore }) => {
         style={{ height: 40, borderColor: 'blue', borderWidth: 1, margin: 10, width: Dimensions.get('window').width - 30 }}
         onChangeText={text => changeBirthday(text)}
         keyboardType={'email-address'}
-        placeholder={'Your year of birth'}
+        placeholder={'Year of birth'}
         value={birthday}
       />
       </View>:<></>}
@@ -643,7 +641,7 @@ const AddRequest = ({ navigation,RootStore }) => {
 <View style={(!validPassword || !samePassword || !username || !city || !province || !country || !keyword1 || !keyword2 || !keyword3 || !validEmail || (age == 1 && !validBirthday))?styles.disabled:styles.enabled} >
     <TouchableOpacity disabled={!validPassword || !samePassword} onPress={Start}>
           <View style={styles.startBottom}>
-            <Text style={styles.startText}>Let's start!</Text>
+            <Text style={styles.startText}>Signup</Text>
           </View>
     </TouchableOpacity>
 </View>
